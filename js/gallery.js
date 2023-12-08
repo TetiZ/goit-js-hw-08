@@ -67,6 +67,18 @@ const images = [
 ];
 
 const gallery = document.querySelector(".gallery");
+let instance;
+
+//  <li class="gallery-item">
+//     <a class="gallery-link" href="large-image.jpg">
+//           <img
+//             class="gallery-image"
+//             src="small-image.jpg"
+//             data-source="large-image.jpg"
+//             alt="Image description"
+//           />
+//       </a>
+//  </li>
 
 for (const { preview, original, description } of images) {
   const galleryItem = document.createElement("li");
@@ -86,19 +98,20 @@ for (const { preview, original, description } of images) {
   galleryLink.append(image);
 }
 
-const largePic = document.querySelector(".gallery-link");
-const smallPic = document.querySelector(".gallery-image");
-
-const loadLargeImg = (event) => {
+gallery.addEventListener("click", (event) => {
   event.preventDefault();
 
-  if (event.target.nodeName === "IMG") {
-    console.log(largePic);
+  if (event.target.nodeName !== "IMG") {
+    return;
   }
-};
+  const largeImg = event.target.dataset.source;
 
-gallery.addEventListener("click", loadLargeImg);
+  instance = basicLightbox.create(`<img src="${largeImg}" alt="description">`);
+  instance.show();
+});
 
-const instance = basicLightbox.create(largePic);
-
-instance.show();
+gallery.addEventListener("keydown", (event) => {
+  if (event.code === "Escape" || event.key === "Escape") {
+    instance.close();
+  }
+});
